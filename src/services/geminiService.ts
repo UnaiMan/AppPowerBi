@@ -1,11 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { GeneratedLessonContent, GeneratedQuizContent } from '../types';
 
-// The API key MUST be obtained exclusively from the environment variable `process.env.API_KEY`.
-const apiKey = process.env.API_KEY;
+// The API key MUST be obtained exclusively from the environment variable `import.meta.env.VITE_API_KEY`.
+const apiKey = import.meta.env.VITE_API_KEY;
 
 if (!apiKey) {
-  throw new Error("API_KEY environment variable not set. It must be configured in your hosting provider (e.g., Netlify).");
+  throw new Error("VITE_API_KEY environment variable not set. It must be configured in your hosting provider (e.g., Netlify).");
 }
 
 const ai = new GoogleGenAI({ apiKey });
