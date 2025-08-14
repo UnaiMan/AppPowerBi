@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 export interface Lesson {
   id: string;
   title: string;
