@@ -5,13 +5,10 @@ import Dashboard from './components/Dashboard';
 import LevelDetail from './components/LevelDetail';
 import LessonView from './components/LessonView';
 import QuizView from './components/QuizView';
-import ApiKeyModal from './components/ApiKeyModal';
-import { hasApiKey, saveApiKey } from './services/geminiService';
 
 type View = 'DASHBOARD' | 'LEVEL_DETAIL' | 'LESSON' | 'QUIZ';
 
 const App: React.FC = () => {
-  const [isKeyConfigured, setIsKeyConfigured] = useState(hasApiKey());
   const [currentView, setCurrentView] = useState<View>('DASHBOARD');
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
@@ -39,11 +36,6 @@ const App: React.FC = () => {
        console.error("Could not save user progress to localStorage", error);
     }
   }, [userProgress]);
-  
-  const handleKeySubmit = (apiKey: string) => {
-    saveApiKey(apiKey);
-    setIsKeyConfigured(true);
-  };
 
   const handleSelectLevel = (levelId: string) => {
     setSelectedLevelId(levelId);
@@ -56,7 +48,7 @@ const App: React.FC = () => {
     setCurrentView('LESSON');
   };
   
-  const handleSelectQuiz = (quizId: string, levelId: string) => {
+  const handleSelectQuiz = (_quizId: string, levelId: string) => {
     setSelectedLevelId(levelId);
     setCurrentView('QUIZ');
   };
@@ -129,10 +121,6 @@ const App: React.FC = () => {
         return <Dashboard userProgress={userProgress} onSelectLevel={handleSelectLevel} />;
     }
   };
-
-  if (!isKeyConfigured) {
-    return <ApiKeyModal onKeySubmit={handleKeySubmit} />;
-  }
 
   return <div className="min-h-screen w-full">{renderView()}</div>;
 };
