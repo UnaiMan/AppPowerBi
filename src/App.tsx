@@ -48,7 +48,7 @@ const App: React.FC = () => {
     setCurrentView('LESSON');
   };
   
-  const handleSelectQuiz = (quizId: string, levelId: string) => {
+  const handleSelectQuiz = (levelId: string) => {
     setSelectedLevelId(levelId);
     setCurrentView('QUIZ');
   };
@@ -103,7 +103,7 @@ const App: React.FC = () => {
       case 'LEVEL_DETAIL':
         const level = COURSE_STRUCTURE.find(l => l.id === selectedLevelId);
         if (!level) return <Dashboard userProgress={userProgress} onSelectLevel={handleSelectLevel} />;
-        return <LevelDetail level={level} userProgress={userProgress} onSelectLesson={handleSelectLesson} onSelectQuiz={handleSelectQuiz} onBack={handleBackToDashboard} />;
+        return <LevelDetail level={level} userProgress={userProgress} onSelectLesson={handleSelectLesson} onSelectQuiz={() => handleSelectQuiz(level.id)} onBack={handleBackToDashboard} />;
       
       case 'LESSON':
         const lessonLevel = COURSE_STRUCTURE.find(l => l.id === selectedLevelId);
