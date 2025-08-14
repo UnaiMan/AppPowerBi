@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { GeneratedQuizContent, QuizQuestion } from '../types';
+import type { GeneratedQuizContent } from '../types';
 import { generateQuiz } from '../services/geminiService';
 import Spinner from './common/Spinner';
 

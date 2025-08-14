@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Level, UserProgress } from '../types';
+import type { UserProgress } from '../types';
 import { COURSE_STRUCTURE } from '../constants';
 import ProgressBar from './common/ProgressBar';
 
@@ -40,7 +40,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userProgress, onSelectLevel }) =>
       </div>
 
       <div className="grid gap-6">
-        {COURSE_STRUCTURE.map((level, index) => {
+        {COURSE_STRUCTURE.map((level) => {
           const isUnlocked = userProgress.unlockedLevels.includes(level.id);
           const completedLessonsInLevel = level.lessons.filter(l => userProgress.completedLessons.includes(l.id)).length;
           const isQuizPassed = userProgress.completedQuizzes[level.quiz.id]?.passed ?? false;
