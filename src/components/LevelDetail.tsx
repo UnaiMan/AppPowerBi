@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { Level, UserProgress } from '../types';
 import ProgressBar from './common/ProgressBar';
@@ -6,7 +7,7 @@ interface LevelDetailProps {
   level: Level;
   userProgress: UserProgress;
   onSelectLesson: (lessonId: string, levelId: string) => void;
-  onSelectQuiz: (quizId: string, levelId: string) => void;
+  onSelectQuiz: (levelId: string) => void;
   onBack: () => void;
 }
 
@@ -59,7 +60,7 @@ const LevelDetail: React.FC<LevelDetailProps> = ({ level, userProgress, onSelect
           );
         })}
         
-        <div onClick={() => onSelectQuiz(level.quiz.id, level.id)} className="flex items-center p-4 bg-brand-primary/30 rounded-lg cursor-pointer hover:bg-brand-primary/50 transition-colors border-2 border-brand-primary">
+        <div onClick={() => onSelectQuiz(level.id)} className="flex items-center p-4 bg-brand-primary/30 rounded-lg cursor-pointer hover:bg-brand-primary/50 transition-colors border-2 border-brand-primary">
           <QuizIcon className="h-8 w-8 text-accent mr-4 flex-shrink-0" />
           <div className="flex-grow">
             <h3 className="text-xl font-bold text-brand-light">Cuestionario Final del Nivel</h3>

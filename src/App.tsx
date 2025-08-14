@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import type { UserProgress } from './types';
 import { COURSE_STRUCTURE } from './constants';
@@ -12,7 +13,6 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('DASHBOARD');
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
 
   const [userProgress, setUserProgress] = useState<UserProgress>(() => {
     try {
@@ -49,8 +49,7 @@ const App: React.FC = () => {
     setCurrentView('LESSON');
   };
   
-  const handleSelectQuiz = (quizId: string, levelId: string) => {
-    setSelectedQuizId(quizId);
+  const handleSelectQuiz = (levelId: string) => {
     setSelectedLevelId(levelId);
     setCurrentView('QUIZ');
   };
@@ -63,7 +62,6 @@ const App: React.FC = () => {
   const handleBackToLevel = () => {
     setCurrentView('LEVEL_DETAIL');
     setSelectedLessonId(null);
-    setSelectedQuizId(null);
   };
   
   const handleCompleteLesson = (lessonId: string) => {
