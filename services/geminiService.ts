@@ -1,10 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { GeneratedLessonContent, GeneratedQuizContent } from '../types';
 
-// The Gemini API key is sourced from the environment variable `process.env.API_KEY`.
-// This is a requirement from the coding guidelines and assumes the execution
-// environment is properly configured to provide this variable.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+// The API key MUST be obtained exclusively from the environment variable `import.meta.env.VITE_API_KEY`.
+const apiKey = import.meta.env.VITE_API_KEY;
+
+if (!apiKey) {
+  throw new Error("VITE_API_KEY environment variable not set. It must be configured in your hosting provider (e.g., Netlify).");
+}
+
+const ai = new GoogleGenAI({ apiKey });
 
 const lessonSchema = {
   type: Type.OBJECT,

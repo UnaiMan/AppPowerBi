@@ -46,4 +46,26 @@ export const COURSE_STRUCTURE: Level[] = [
     ],
     quiz: { id: 'q4', topic: 'Power Query and Data Transformation', questionCount: 5 },
   },
+  {
+    id: 'level-5',
+    title: 'Nivel 5: Servicio Power BI y Colaboración',
+    description: 'Publica tus informes, crea dashboards y colabora de forma segura en el servicio en la nube de Power BI.',
+    lessons: [
+      { id: 'l5-1', title: 'Publicar Informes en el Servicio Power BI', topic: 'Publishing Power BI reports from Desktop to the Power BI Service' },
+      { id: 'l5-2', title: 'Creación de Dashboards Interactivos', topic: 'Creating and configuring interactive dashboards in the Power BI Service' },
+      { id: 'l5-3', title: 'Seguridad a Nivel de Fila (RLS)', topic: 'Implementing Row-Level Security (RLS) in Power BI to restrict data access' },
+    ],
+    quiz: { id: 'q5', topic: 'Power BI Service and Collaboration', questionCount: 5 },
+  },
+  {
+    id: 'level-6',
+    title: 'Nivel 6: Técnicas Pro y Optimización',
+    description: 'Conviértete en un experto optimizando el rendimiento y ampliando las capacidades de Power BI.',
+    lessons: [
+      { id: 'l6-1', title: 'Optimización de Modelos con DAX Studio', topic: 'Using DAX Studio to analyze and optimize Power BI data models for performance' },
+      { id: 'l6-2', title: 'Visualizaciones Personalizadas', topic: 'Importing and using custom visuals from the AppSource marketplace in Power BI' },
+      { id: 'l6-3', title: 'Introducción a la Integración con Python/R', topic: 'Introduction to integrating Python and R scripts in Power BI for advanced analytics' },
+    ],
+    quiz: { id: 'q6', topic: 'Power BI Pro Techniques and Optimization', questionCount: 5 },
+  },
 ];
