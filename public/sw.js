@@ -3,9 +3,7 @@ const URLS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/vite.svg',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/vite.svg'
 ];
 
 self.addEventListener('install', event => {
@@ -13,7 +11,9 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(URLS_TO_CACHE);
+        return cache.addAll(URLS_TO_CACHE).catch(err => {
+          console.error('Failed to cache URLs:', err);
+        });
       })
   );
 });
