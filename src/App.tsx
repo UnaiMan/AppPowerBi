@@ -5,14 +5,16 @@ import Dashboard from './components/Dashboard';
 import LevelDetail from './components/LevelDetail';
 import LessonView from './components/LessonView';
 import QuizView from './components/QuizView';
+import ApiKeyModal from './components/ApiKeyModal';
+import { hasApiKey, saveApiKey } from './services/geminiService';
 
 type View = 'DASHBOARD' | 'LEVEL_DETAIL' | 'LESSON' | 'QUIZ';
 
 const App: React.FC = () => {
+  const [isKeyConfigured, setIsKeyConfigured] = useState(hasApiKey());
   const [currentView, setCurrentView] = useState<View>('DASHBOARD');
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
 
   const [userProgress, setUserProgress] = useState<UserProgress>(() => {
     try {
@@ -38,6 +40,11 @@ const App: React.FC = () => {
     }
   }, [userProgress]);
   
+  const handleKeySubmit = (apiKey: string) => {
+    saveApiKey(apiKey);
+    setIsKeyConfigured(true);
+  };
+
   const handleSelectLevel = (levelId: string) => {
     setSelectedLevelId(levelId);
     setCurrentView('LEVEL_DETAIL');
@@ -50,7 +57,6 @@ const App: React.FC = () => {
   };
   
   const handleSelectQuiz = (quizId: string, levelId: string) => {
-    setSelectedQuizId(quizId);
     setSelectedLevelId(levelId);
     setCurrentView('QUIZ');
   };
@@ -63,7 +69,6 @@ const App: React.FC = () => {
   const handleBackToLevel = () => {
     setCurrentView('LEVEL_DETAIL');
     setSelectedLessonId(null);
-    setSelectedQuizId(null);
   };
   
   const handleCompleteLesson = (lessonId: string) => {
@@ -124,6 +129,10 @@ const App: React.FC = () => {
         return <Dashboard userProgress={userProgress} onSelectLevel={handleSelectLevel} />;
     }
   };
+
+  if (!isKeyConfigured) {
+    return <ApiKeyModal onKeySubmit={handleKeySubmit} />;
+  }
 
   return <div className="min-h-screen w-full">{renderView()}</div>;
 };
