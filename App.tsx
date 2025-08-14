@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import type { UserProgress } from './types';
 import { COURSE_STRUCTURE } from './constants';
@@ -6,10 +5,13 @@ import Dashboard from './components/Dashboard';
 import LevelDetail from './components/LevelDetail';
 import LessonView from './components/LessonView';
 import QuizView from './components/QuizView';
+import ApiKeyModal from './components/ApiKeyModal';
+import { hasApiKey, saveApiKey } from './services/geminiService';
 
 type View = 'DASHBOARD' | 'LEVEL_DETAIL' | 'LESSON' | 'QUIZ';
 
 const App: React.FC = () => {
+  const [isKeyConfigured, setIsKeyConfigured] = useState(hasApiKey());
   const [currentView, setCurrentView] = useState<View>('DASHBOARD');
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
@@ -39,6 +41,11 @@ const App: React.FC = () => {
     }
   }, [userProgress]);
   
+  const handleKeySubmit = (apiKey: string) => {
+    saveApiKey(apiKey);
+    setIsKeyConfigured(true);
+  };
+
   const handleSelectLevel = (levelId: string) => {
     setSelectedLevelId(levelId);
     setCurrentView('LEVEL_DETAIL');
@@ -101,13 +108,12 @@ const App: React.FC = () => {
     // The view is handled within the QuizView component until user clicks to go back
   };
 
-
   const renderView = () => {
     switch (currentView) {
       case 'LEVEL_DETAIL':
         const level = COURSE_STRUCTURE.find(l => l.id === selectedLevelId);
         if (!level) return <Dashboard userProgress={userProgress} onSelectLevel={handleSelectLevel} />;
-        return <LevelDetail level={level} userProgress={userProgress} onSelectLesson={handleSelectLesson} onSelectQuiz={handleSelectQuiz} onBack={handleBackToDashboard} />;
+        return <LevelDetail level={level} userProgress={userProgress} onSelectLesson={handleSelectLesson} onSelectQuiz={(levelId) => handleSelectQuiz(level.quiz.id, levelId)} onBack={handleBackToDashboard} />;
       
       case 'LESSON':
         const lessonLevel = COURSE_STRUCTURE.find(l => l.id === selectedLevelId);
@@ -126,6 +132,10 @@ const App: React.FC = () => {
         return <Dashboard userProgress={userProgress} onSelectLevel={handleSelectLevel} />;
     }
   };
+
+  if (!isKeyConfigured) {
+    return <ApiKeyModal onKeySubmit={handleKeySubmit} />;
+  }
 
   return <div className="min-h-screen w-full">{renderView()}</div>;
 };
