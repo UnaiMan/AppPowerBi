@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Lesson, GeneratedLessonContent, GeneratedLessonSection } from '../types';
-import { generateLessonContent, generateImageFromPrompt } from '../services/geminiService';
+import { generateLessonContent, generateImageFromPrompt, InvalidApiKeyError } from '../services/geminiService';
 import Spinner from './common/Spinner';
 import Icon from './common/Icon';
 
@@ -9,9 +8,10 @@ interface LessonViewProps {
   lesson: Lesson;
   onComplete: () => void;
   onBack: () => void;
+  onInvalidApiKey: () => void;
 }
 
-const ImageGenerator: React.FC<{ section: GeneratedLessonSection }> = ({ section }) => {
+const ImageGenerator: React.FC<{ section: GeneratedLessonSection, onInvalidApiKey: () => void }> = ({ section, onInvalidApiKey }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -23,12 +23,16 @@ const ImageGenerator: React.FC<{ section: GeneratedLessonSection }> = ({ section
             const url = await generateImageFromPrompt(prompt);
             setImageUrl(url);
         } catch (err) {
+            if (err instanceof InvalidApiKeyError) {
+                onInvalidApiKey();
+                return;
+            }
             setError('No se pudo cargar la imagen.');
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [onInvalidApiKey]);
     
     useEffect(() => {
         if (section.imagePrompt) {
@@ -50,7 +54,7 @@ const ImageGenerator: React.FC<{ section: GeneratedLessonSection }> = ({ section
     );
 };
 
-const LessonView: React.FC<LessonViewProps> = ({ lesson, onComplete, onBack }) => {
+const LessonView: React.FC<LessonViewProps> = ({ lesson, onComplete, onBack, onInvalidApiKey }) => {
   const [content, setContent] = useState<GeneratedLessonContent | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,12 +66,16 @@ const LessonView: React.FC<LessonViewProps> = ({ lesson, onComplete, onBack }) =
       const lessonContent = await generateLessonContent(lesson.topic);
       setContent(lessonContent);
     } catch (err) {
+      if (err instanceof InvalidApiKeyError) {
+        onInvalidApiKey();
+        return;
+      }
       setError('Error al generar el contenido de la lección. Por favor, inténtalo de nuevo.');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [lesson.topic]);
+  }, [lesson.topic, onInvalidApiKey]);
 
   useEffect(() => {
     fetchLessonContent();
@@ -106,7 +114,7 @@ const LessonView: React.FC<LessonViewProps> = ({ lesson, onComplete, onBack }) =
           <section key={index} className="mt-8">
             <h2 className="text-2xl font-semibold text-accent border-b border-slate-600 pb-2">{section.heading}</h2>
             <div className="text-slate-300" dangerouslySetInnerHTML={{ __html: section.content.replace(/\n/g, '<br />') }}></div>
-            <ImageGenerator section={section} />
+            <ImageGenerator section={section} onInvalidApiKey={onInvalidApiKey} />
           </section>
         ))}
         

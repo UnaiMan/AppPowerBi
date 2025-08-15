@@ -3,6 +3,13 @@ import type { GeneratedLessonContent, GeneratedQuiz } from '../types';
 
 const API_KEY_STORAGE_KEY = 'google-api-key';
 
+export class InvalidApiKeyError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidApiKeyError';
+  }
+}
+
 // Helper function to get the initialized client
 const getGoogleAI = (): GoogleGenAI => {
   const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
@@ -52,7 +59,7 @@ export const generateLessonContent = async (topic: string): Promise<GeneratedLes
   } catch (error) {
     console.error("Error generating lesson content:", error);
     if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-       throw new Error("La clave de API no es válida. Por favor, verifica tu clave.");
+       throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
     }
     throw new Error("Failed to generate lesson content from API.");
   }
@@ -104,7 +111,7 @@ export const generateQuiz = async (topic: string, questionCount: number): Promis
   } catch (error) {
     console.error("Error generating quiz:", error);
     if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-       throw new Error("La clave de API no es válida. Por favor, verifica tu clave.");
+       throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
     }
     throw new Error("Failed to generate quiz from API.");
   }
@@ -120,15 +127,15 @@ export const generateImageFromPrompt = async (prompt: string): Promise<string> =
         config: {
           numberOfImages: 1,
           aspectRatio: '16:9',
-          outputMimeType: 'image/jpeg',
+          outputMimeType: 'image/png',
         },
       });
       const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
-      return `data:image/jpeg;base64,${base64ImageBytes}`;
+      return `data:image/png;base64,${base64ImageBytes}`;
     } catch (error) {
         console.error("Error generating image:", error);
         if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-          throw new Error("La clave de API no es válida. Por favor, verifica tu clave.");
+          throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
         }
         throw new Error("Failed to generate image from API.");
     }

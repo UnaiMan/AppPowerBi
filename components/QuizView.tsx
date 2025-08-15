@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Quiz, GeneratedQuiz, QuizQuestion } from '../types';
-import { generateQuiz } from '../services/geminiService';
+import { generateQuiz, InvalidApiKeyError } from '../services/geminiService';
 import { PASSING_SCORE_PERCENTAGE } from '../constants';
 import Spinner from './common/Spinner';
 import Icon from './common/Icon';
@@ -11,9 +10,10 @@ interface QuizViewProps {
   levelId: string;
   onComplete: (score: number, passed: boolean) => void;
   onBack: () => void;
+  onInvalidApiKey: () => void;
 }
 
-const QuizView: React.FC<QuizViewProps> = ({ quiz, onComplete, onBack }) => {
+const QuizView: React.FC<QuizViewProps> = ({ quiz, onComplete, onBack, onInvalidApiKey }) => {
   const [quizData, setQuizData] = useState<GeneratedQuiz | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,12 +30,16 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, onComplete, onBack }) => {
       const data = await generateQuiz(quiz.topic, quiz.questionCount);
       setQuizData(data);
     } catch (err) {
+      if (err instanceof InvalidApiKeyError) {
+        onInvalidApiKey();
+        return;
+      }
       setError('Error al generar el cuestionario. Por favor, inténtalo de nuevo.');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [quiz.topic, quiz.questionCount]);
+  }, [quiz.topic, quiz.questionCount, onInvalidApiKey]);
   
   useEffect(() => {
     fetchQuizData();

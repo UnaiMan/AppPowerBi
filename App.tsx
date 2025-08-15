@@ -96,6 +96,7 @@ export default function App(): React.ReactNode {
               navigateToLevelDetail();
             }}
             onBack={navigateToLevelDetail}
+            onInvalidApiKey={handleClearApiKey}
           />
         ) : null;
       case AppView.QUIZ:
@@ -108,6 +109,7 @@ export default function App(): React.ReactNode {
               navigateToLevelDetail();
             }}
             onBack={navigateToLevelDetail}
+            onInvalidApiKey={handleClearApiKey}
           />
         ) : null;
       case AppView.DASHBOARD:
