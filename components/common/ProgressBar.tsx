@@ -2,16 +2,16 @@
 import React from 'react';
 
 interface ProgressBarProps {
-  progress: number; // A value between 0 and 100
+  progress: number;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   const safeProgress = Math.max(0, Math.min(100, progress));
 
   return (
-    <div className="w-full bg-gray-700 rounded-full h-4">
+    <div className="w-full bg-slate-700 rounded-full h-2.5">
       <div
-        className="bg-brand-secondary h-4 rounded-full transition-all duration-500 ease-out"
+        className="bg-gradient-to-r from-brand-secondary to-brand-primary h-2.5 rounded-full transition-all duration-500"
         style={{ width: `${safeProgress}%` }}
       ></div>
     </div>

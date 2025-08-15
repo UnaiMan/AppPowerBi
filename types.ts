@@ -1,7 +1,14 @@
+
 export interface Lesson {
   id: string;
   title: string;
-  topic: string; // The topic to be sent to Gemini
+  topic: string;
+}
+
+export interface Quiz {
+  id: string;
+  topic: string;
+  questionCount: number;
 }
 
 export interface Level {
@@ -9,23 +16,25 @@ export interface Level {
   title: string;
   description: string;
   lessons: Lesson[];
-  quiz: {
-    id: string;
-    topic: string;
-    questionCount: number;
-  };
+  quiz: Quiz;
 }
 
-export interface LessonSection {
+export interface UserProgress {
+  completedLessons: string[];
+  completedQuizzes: { [quizId: string]: { score: number; passed: boolean } };
+  unlockedLevels: string[];
+}
+
+export interface GeneratedLessonSection {
   heading: string;
   content: string;
   imagePrompt?: string;
 }
 
 export interface GeneratedLessonContent {
-  title:string;
+  title: string;
   introduction: string;
-  sections: LessonSection[];
+  sections: GeneratedLessonSection[];
   conclusion: string;
 }
 
@@ -36,13 +45,14 @@ export interface QuizQuestion {
   explanation: string;
 }
 
-export interface GeneratedQuizContent {
+export interface GeneratedQuiz {
   title: string;
   questions: QuizQuestion[];
 }
 
-export interface UserProgress {
-  completedLessons: string[];
-  completedQuizzes: { [quizId: string]: { score: number; passed: boolean } };
-  unlockedLevels: string[];
+export enum AppView {
+  DASHBOARD = 'DASHBOARD',
+  LEVEL_DETAIL = 'LEVEL_DETAIL',
+  LESSON = 'LESSON',
+  QUIZ = 'QUIZ',
 }
