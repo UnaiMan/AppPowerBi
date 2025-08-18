@@ -32,7 +32,7 @@ const ImageGenerator: React.FC<{ section: GeneratedLessonSection, onInvalidApiKe
         } finally {
             setLoading(false);
         }
-    }, [onInvalidApiKey]);
+    }, [onInvalidApiKey, section.imagePrompt]);
     
     useEffect(() => {
         if (section.imagePrompt) {
@@ -40,8 +40,7 @@ const ImageGenerator: React.FC<{ section: GeneratedLessonSection, onInvalidApiKe
         } else {
             setLoading(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [section.imagePrompt]);
+    }, [section.imagePrompt, fetchImage]);
 
     if (!section.imagePrompt) return null;
 

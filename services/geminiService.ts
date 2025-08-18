@@ -1,30 +1,33 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { GeneratedLessonContent, GeneratedQuiz } from '../types';
 
-const API_KEY_STORAGE_KEY = 'google-api-key';
-
 export class InvalidApiKeyError extends Error {
-  constructor(message: string) {
+  constructor(message = 'Clave de API de Gemini no válida o no encontrada.') {
     super(message);
     this.name = 'InvalidApiKeyError';
   }
 }
 
-// Helper function to get the initialized client
-const getGoogleAI = (): GoogleGenAI => {
-  const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+const getGenAIClient = (): GoogleGenAI => {
+  const apiKey = localStorage.getItem('gemini-api-key');
   if (!apiKey) {
-    // This should ideally not be reached if the UI flow is correct,
-    // but it's a good safeguard.
-    throw new Error("API key not found in localStorage. Please set it first.");
+    throw new InvalidApiKeyError('La clave de API no se encontró en el almacenamiento local.');
   }
   return new GoogleGenAI({ apiKey });
 };
 
+const handleApiError = (error: any): never => {
+    console.error("Error en la API de Gemini:", error);
+    if (error.message && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
+        throw new InvalidApiKeyError();
+    }
+    throw new Error("Falló la comunicación con la API de Gemini.");
+};
+
 
 export const generateLessonContent = async (topic: string): Promise<GeneratedLessonContent> => {
-  const ai = getGoogleAI();
   try {
+    const ai = getGenAIClient();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Genera una lección detallada y fácil de entender en español sobre el siguiente tema de Power BI: "${topic}". La lección debe ser educativa, clara y estar estructurada para un principiante. No incluyas el título principal en la respuesta, solo el objeto JSON.`,
@@ -57,17 +60,14 @@ export const generateLessonContent = async (topic: string): Promise<GeneratedLes
     const jsonText = response.text.trim();
     return JSON.parse(jsonText) as GeneratedLessonContent;
   } catch (error) {
-    console.error("Error generating lesson content:", error);
-    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-       throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
-    }
-    throw new Error("Failed to generate lesson content from API.");
+    if (error instanceof InvalidApiKeyError) throw error;
+    handleApiError(error);
   }
 };
 
 export const generateQuiz = async (topic: string, questionCount: number): Promise<GeneratedQuiz> => {
-  const ai = getGoogleAI();
   try {
+    const ai = getGenAIClient();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Genera un cuestionario de opción múltiple en español con ${questionCount} preguntas sobre el siguiente tema de Power BI: "${topic}". Cada pregunta debe tener 4 opciones y solo una respuesta correcta. Las preguntas deben evaluar la comprensión del tema. No incluyas el título principal en la respuesta, solo el objeto JSON.`,
@@ -109,17 +109,14 @@ export const generateQuiz = async (topic: string, questionCount: number): Promis
     });
     return parsedData as GeneratedQuiz;
   } catch (error) {
-    console.error("Error generating quiz:", error);
-    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-       throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
-    }
-    throw new Error("Failed to generate quiz from API.");
+    if (error instanceof InvalidApiKeyError) throw error;
+    handleApiError(error);
   }
 };
 
 export const generateImageFromPrompt = async (prompt: string): Promise<string> => {
-    const ai = getGoogleAI();
     try {
+      const ai = getGenAIClient();
       const fullPrompt = `${prompt}, as a clear screenshot for a tutorial, user interface, high resolution, clear text`;
       const response = await ai.models.generateImages({
         model: 'imagen-3.0-generate-002',
@@ -133,10 +130,7 @@ export const generateImageFromPrompt = async (prompt: string): Promise<string> =
       const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
       return `data:image/png;base64,${base64ImageBytes}`;
     } catch (error) {
-        console.error("Error generating image:", error);
-        if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API_KEY_INVALID'))) {
-          throw new InvalidApiKeyError("La clave de API no es válida. Por favor, verifica tu clave.");
-        }
-        throw new Error("Failed to generate image from API.");
+        if (error instanceof InvalidApiKeyError) throw error;
+        handleApiError(error);
     }
 };

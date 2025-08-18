@@ -9,14 +9,14 @@ import QuizView from './components/QuizView';
 import ApiKeyPrompt from './components/ApiKeyPrompt';
 import { useUserProgress } from './hooks/useUserProgress';
 
-const API_KEY_STORAGE_KEY = 'google-api-key';
+const API_KEY_STORAGE_KEY = 'gemini-api-key';
 
 export default function App(): React.ReactNode {
-  const [apiKey, setApiKey] = useState<string | null>(() => localStorage.getItem(API_KEY_STORAGE_KEY));
   const [view, setView] = useState<AppView>(AppView.DASHBOARD);
   const [currentLevel, setCurrentLevel] = useState<Level | null>(null);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const [currentQuiz, setCurrentQuiz] = useState<Quiz | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(() => localStorage.getItem(API_KEY_STORAGE_KEY));
 
   const {
     userProgress,
@@ -70,7 +70,7 @@ export default function App(): React.ReactNode {
       navigateToDashboard();
     }
   };
-
+  
   if (!apiKey) {
     return <ApiKeyPrompt onApiKeySubmit={handleApiKeySubmit} />;
   }
@@ -126,8 +126,8 @@ export default function App(): React.ReactNode {
   };
 
   return (
-    <div className="min-h-screen bg-brand-dark p-4 sm:p-6 md:p-8">
-      <main className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-brand-dark">
+      <main className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
         {renderContent()}
       </main>
     </div>

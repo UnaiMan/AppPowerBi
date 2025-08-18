@@ -15,48 +15,30 @@ const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({ onApiKeySubmit }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-dark p-4">
-      <div className="w-full max-w-md bg-brand-dark-light p-8 rounded-lg shadow-2xl border border-slate-700 animate-fade-in">
-        <h1 className="text-2xl font-bold text-white text-center mb-2">Power BI Mastery Path</h1>
-        <p className="text-center text-slate-300 mb-6">Ingresa tu Clave de API de Google para comenzar</p>
-        
+    <div className="fixed inset-0 bg-brand-dark bg-opacity-90 flex items-center justify-center z-50 animate-fade-in">
+      <div className="bg-brand-dark-light p-8 rounded-lg shadow-2xl border border-slate-700 max-w-md w-full text-center">
+        <h2 className="text-2xl font-bold text-white mb-4">Ingresa tu Clave de API de Google Gemini</h2>
+        <p className="text-slate-400 mb-6">
+          Para generar contenido, la aplicación necesita tu clave de API de Google Gemini. No te preocupes, se guardará de forma segura en tu navegador.
+        </p>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="apiKey" className="block text-sm font-medium text-slate-400 mb-2">
-              Google Gemini API Key
-            </label>
-            <input
-              id="apiKey"
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-md text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder="••••••••••••••••••••••••••"
-              required
-              aria-required="true"
-            />
-          </div>
-          
+          <input
+            type="password"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="Introduce tu clave de API aquí"
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-accent"
+          />
           <button
             type="submit"
-            className="w-full bg-accent hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!apiKey.trim()}
+            className="w-full mt-4 bg-accent hover:bg-sky-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-md transition-colors"
           >
             Guardar y Continuar
           </button>
         </form>
-
-        <p className="text-xs text-slate-500 mt-6 text-center">
-          Tu clave de API se guarda localmente en tu navegador y no se comparte con ningún servidor.
-          {' '}
-          <a
-            href="https://aistudio.google.com/app/apikey"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent hover:underline"
-          >
-            Obtén tu clave aquí.
-          </a>
+        <p className="text-xs text-slate-500 mt-4">
+          Puedes obtener tu clave en <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-accent underline">Google AI Studio</a>.
         </p>
       </div>
     </div>

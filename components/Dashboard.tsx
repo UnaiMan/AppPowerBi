@@ -63,13 +63,15 @@ const Dashboard: React.FC<DashboardProps> = ({ levels, userProgress, onSelectLev
             <header className="mb-10 text-center relative">
                 <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">Power BI Mastery Path</h1>
                 <p className="mt-4 text-lg text-slate-300">Tu camino para convertirte en un experto en Power BI.</p>
-                 <button 
-                  onClick={onClearApiKey}
-                  className="absolute top-0 right-0 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-1 px-3 rounded-full transition-colors"
-                  aria-label="Cambiar clave de API"
-                >
-                    Cambiar API Key
-                </button>
+                <div className="absolute top-0 right-0">
+                    <button 
+                        onClick={onClearApiKey} 
+                        className="text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-4 rounded-lg transition-colors"
+                        title="Cambiar Clave de API"
+                    >
+                        Cambiar API Key
+                    </button>
+                </div>
             </header>
 
             <div className="mb-10 p-6 bg-brand-dark-light rounded-lg shadow-md">
